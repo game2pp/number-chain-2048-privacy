@@ -1,8 +1,9 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Privacy Policy - Number Chain 2048</title>
+  <title>Win Game Page</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <!-- Bootstrap CSS -->
@@ -10,155 +11,577 @@
 
   <style>
     :root{
-      --bg:#0b0b0f;
-      --card:#14141a;
-      --stroke:#2a2a36;
-      --title:#ff5a5a;   /* matches your red title vibe */
-      --text:#f2f2f4;
-      --muted:#b7b7c2;
-      --accent:#ff6b6b;
-      --accent-dark:#ff4b4b;
+      --bg0:#070712;
+      --bg1:#0b0b1a;
+      --panel:#0f1022cc;
+      --panel2:#0d0f20cc;
+      --stroke:rgba(255,255,255,.12);
+      --text:#f5f7ff;
+      --muted:rgba(245,247,255,.72);
+
+      --neon-pink:#ff4fd8;
+      --neon-cyan:#24e6ff;
+      --neon-lime:#a6ff4d;
+      --neon-violet:#8b5bff;
+      --neon-amber:#ffcf4a;
+
+      --glow-pink:rgba(255,79,216,.42);
+      --glow-cyan:rgba(36,230,255,.35);
+      --glow-violet:rgba(139,91,255,.35);
+
+      --radius-xl:22px;
+      --radius-lg:18px;
     }
 
     body{
-      background: radial-gradient(1200px 600px at 50% -10%, rgba(255,90,90,.18), transparent 60%),
-                  linear-gradient(180deg, #0b0b0f 0%, #07070a 100%);
+      background:
+        radial-gradient(1200px 600px at 15% -10%, var(--glow-pink), transparent 55%),
+        radial-gradient(900px 500px at 85% 5%, var(--glow-cyan), transparent 55%),
+        radial-gradient(1000px 650px at 50% 110%, var(--glow-violet), transparent 55%),
+        linear-gradient(180deg, var(--bg1) 0%, var(--bg0) 100%);
       color: var(--text);
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       min-height: 100vh;
+      overflow-x: hidden;
     }
 
-    .brand-title{
-      color: var(--title);
+    /* subtle animated “arcade dust” */
+    .grain{
+      pointer-events:none;
+      position:fixed; inset:0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.18'/%3E%3C/svg%3E");
+      mix-blend-mode: overlay;
+      opacity:.22;
+    }
+
+    /* Top bar */
+    .topbar{
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(12px);
+      background: rgba(8,8,20,.55);
+      border-bottom: 1px solid rgba(255,255,255,.10);
+    }
+
+    .brand{
       font-weight: 900;
-      letter-spacing: .8px;
+      letter-spacing: .6px;
       text-transform: uppercase;
+      background: linear-gradient(90deg, var(--neon-pink), var(--neon-cyan), var(--neon-lime));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
     }
 
-    .policy-card{
-      background: var(--card);
-      border: 1px solid var(--stroke);
-      border-radius: 18px;
-      box-shadow: 0 14px 35px rgba(0,0,0,.45);
+    .navlink{
+      color: var(--muted);
+      text-decoration: none;
+      font-weight: 700;
+      padding: 10px 12px;
+      border-radius: 12px;
+    }
+    .navlink:hover{
+      color: var(--text);
+      background: rgba(255,255,255,.06);
     }
 
-    .muted{ color: var(--muted) !important; }
+    /* Hero */
+    .hero{
+      padding: 56px 0 22px;
+    }
+
+    .hero-card{
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: var(--radius-xl);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      box-shadow:
+        0 18px 45px rgba(0,0,0,.50),
+        0 0 0 1px rgba(255,255,255,.05) inset;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero-card::before{
+      content:"";
+      position:absolute; inset:-2px;
+      background:
+        radial-gradient(500px 200px at 20% 0%, rgba(255,79,216,.35), transparent 70%),
+        radial-gradient(500px 220px at 80% 10%, rgba(36,230,255,.28), transparent 70%),
+        radial-gradient(700px 260px at 50% 110%, rgba(166,255,77,.20), transparent 75%);
+      filter: blur(8px);
+      opacity: .9;
+      pointer-events:none;
+    }
+
+    .hero-inner{
+      position: relative;
+      padding: 30px;
+    }
+
+    .badge-soft{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      border-radius: 999px;
+      padding: 10px 14px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.10);
+      color: var(--muted);
+      font-weight: 800;
+    }
+
+    .dot{
+      width:10px; height:10px; border-radius:50%;
+      background: var(--neon-cyan);
+      box-shadow: 0 0 18px rgba(36,230,255,.65);
+    }
+
+    .headline{
+      font-weight: 950;
+      line-height: 1.05;
+      letter-spacing: -.6px;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      margin: 14px 0 10px;
+    }
+
+    .subtext{
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 54ch;
+    }
+
+    .cta-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .btn-neon{
+      border: 0;
+      border-radius: 16px;
+      padding: 12px 16px;
+      font-weight: 900;
+      color: #0b0b10;
+      background: linear-gradient(90deg, var(--neon-pink), var(--neon-cyan));
+      box-shadow: 0 16px 30px rgba(0,0,0,.35), 0 0 24px rgba(255,79,216,.18);
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      gap: 10px;
+    }
+    .btn-neon:hover{ filter: brightness(1.05); color:#0b0b10; }
+
+    .btn-ghost{
+      border-radius: 16px;
+      padding: 12px 16px;
+      font-weight: 900;
+      color: var(--text);
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.14);
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      gap: 10px;
+    }
+    .btn-ghost:hover{ background: rgba(255,255,255,.09); color: var(--text); }
+
+    /* “Game screen” mock panel */
+    .screen{
+      border-radius: var(--radius-xl);
+      background: linear-gradient(180deg, rgba(16,16,34,.85), rgba(10,10,24,.75));
+      border: 1px solid rgba(255,255,255,.12);
+      box-shadow: 0 20px 45px rgba(0,0,0,.55);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .screen-top{
+      display:flex;
+      justify-content: space-between;
+      align-items:center;
+      padding: 14px 16px;
+      background: rgba(255,255,255,.04);
+      border-bottom: 1px solid rgba(255,255,255,.10);
+    }
+
+    .pill{
+      font-weight: 900;
+      font-size: .85rem;
+      color: rgba(245,247,255,.88);
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+    }
+
+    .meter{
+      height: 10px;
+      width: 120px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.10);
+      overflow:hidden;
+    }
+    .meter > span{
+      display:block;
+      height:100%;
+      width: 68%;
+      background: linear-gradient(90deg, var(--neon-lime), var(--neon-cyan), var(--neon-pink));
+      box-shadow: 0 0 20px rgba(36,230,255,.35);
+    }
+
+    .screen-body{
+      padding: 16px;
+    }
+
+    .grid-tiles{
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .tile{
+      aspect-ratio: 1 / 1;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.12);
+      background:
+        radial-gradient(120px 120px at 30% 20%, rgba(255,255,255,.10), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight: 950;
+      font-size: 1.05rem;
+      color: rgba(245,247,255,.90);
+      position: relative;
+      overflow:hidden;
+    }
+
+    .tile::after{
+      content:"";
+      position:absolute; inset:-40%;
+      background: conic-gradient(from 180deg, rgba(255,79,216,.25), rgba(36,230,255,.20), rgba(166,255,77,.18), rgba(139,91,255,.22), rgba(255,79,216,.25));
+      filter: blur(14px);
+      opacity:.35;
+      transform: rotate(18deg);
+    }
+    .tile > span{ position:relative; z-index:1; }
+
+    /* Feature cards */
+    .section{
+      padding: 26px 0;
+    }
 
     .section-title{
-      color: var(--accent);
-      margin-top: 18px;
-      font-weight: 800;
-      font-size: 1.05rem;
+      font-weight: 950;
+      letter-spacing: -.3px;
+      margin: 0 0 14px;
     }
 
-    .divider{
-      border-color: rgba(255,255,255,.10);
+    .cardx{
+      background: var(--panel);
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 16px 35px rgba(0,0,0,.45);
+      padding: 18px;
+      height: 100%;
+      position: relative;
+      overflow:hidden;
     }
 
-    .btn-accent{
-      background: var(--accent);
-      border: none;
+    .cardx::before{
+      content:"";
+      position:absolute; inset:-2px;
+      background:
+        radial-gradient(240px 120px at 10% 0%, rgba(255,79,216,.22), transparent 65%),
+        radial-gradient(240px 120px at 90% 10%, rgba(36,230,255,.18), transparent 65%);
+      filter: blur(10px);
+      opacity:.9;
+      pointer-events:none;
+    }
+
+    .cardx > *{ position:relative; z-index:1; }
+
+    .icon{
+      width: 42px; height: 42px;
       border-radius: 14px;
-      padding: 10px 14px;
-      color: #111;
-      font-weight: 800;
-    }
-    .btn-accent:hover{
-      background: var(--accent-dark);
-      color: #111;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      display:flex; align-items:center; justify-content:center;
+      font-weight: 950;
+      color: #0b0b10;
+      box-shadow: 0 0 22px rgba(36,230,255,.14);
     }
 
-    a{ color: var(--accent); }
-    a:hover{ opacity:.92; }
+    .i1{ background: linear-gradient(135deg, var(--neon-cyan), var(--neon-lime)); }
+    .i2{ background: linear-gradient(135deg, var(--neon-pink), var(--neon-amber)); }
+    .i3{ background: linear-gradient(135deg, var(--neon-violet), var(--neon-cyan)); }
+
+    .muted{ color: var(--muted); }
+
+    /* Footer */
+    footer{
+      border-top: 1px solid rgba(255,255,255,.10);
+      background: rgba(8,8,20,.55);
+      backdrop-filter: blur(10px);
+      padding: 18px 0;
+      margin-top: 18px;
+    }
+
+    /* Scroll offset for sticky header */
+    section{ scroll-margin-top: 90px; }
   </style>
 </head>
 
 <body>
-  <div class="container py-5">
-    <div class="row justify-content-center">
-      <div class="col-lg-9 col-xl-8">
+  <div class="grain"></div>
 
-        <h1 class="brand-title text-center mb-2">Number Chain 2048</h1>
-        <p class="text-center muted mb-4">Privacy Policy</p>
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="container py-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
+      <div class="d-flex align-items-center gap-3">
+        <div class="brand">GAME HUB</div>
+        <div class="d-none d-md-block muted fw-semibold">Arcade-style landing page template</div>
+      </div>
 
-        <div class="policy-card p-4 p-md-5">
-          <div class="d-flex justify-content-between flex-wrap gap-2">
-            <h2 class="h4 mb-0 brand-title" style="text-transform:none; letter-spacing:.2px;">Privacy Policy</h2>
-            <p class="mb-0 muted">Last updated: January 2026</p>
+      <nav class="d-flex align-items-center gap-1">
+        <a class="navlink" href="#features">Features</a>
+        <a class="navlink" href="#about">About</a>
+        <a class="navlink" href="#faq">FAQ</a>
+        <a class="navlink" href="#contact">Contact</a>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <div class="container hero">
+    <div class="hero-card">
+      <div class="hero-inner">
+        <div class="row align-items-center g-4">
+          <div class="col-lg-6">
+            <div class="badge-soft">
+              <span class="dot"></span>
+              <span>Fast • Lightweight • Offline-friendly</span>
+            </div>
+
+            <h1 class="headline">Neon Arcade Game<br/>Landing Page</h1>
+            <p class="subtext">
+              Use this premium “game UI” style homepage for any mobile game or casual app.
+              Replace text, add screenshots, and link your store page.
+            </p>
+
+            <div class="cta-row">
+              <a class="btn-neon" href="#features">
+                <span>▶</span> Explore Features
+              </a>
+              <a class="btn-ghost" href="#" onclick="alert('Replace this with your store link!'); return false;">
+                <span>⬇</span> Get the Game
+              </a>
+            </div>
+
+            <div class="mt-3 muted fw-semibold">
+              No real-money language • No “win cash” vibe • Safe for general arcade branding
+            </div>
           </div>
 
-          <hr class="divider">
+          <div class="col-lg-6">
+            <div class="screen">
+              <div class="screen-top">
+                <div class="pill">LEVEL 12</div>
+                <div class="meter" aria-label="progress"><span></span></div>
+                <div class="pill">SCORE 8,240</div>
+              </div>
 
-          <p>
-            This Privacy Policy explains how <strong>Number Chain 2048</strong> (“we”, “our”, or “us”)
-            handles information when you use our mobile application.
-          </p>
+              <div class="screen-body">
+                <div class="grid-tiles" aria-label="game preview tiles">
+                  <div class="tile"><span>2</span></div>
+                  <div class="tile"><span>4</span></div>
+                  <div class="tile"><span>8</span></div>
+                  <div class="tile"><span>16</span></div>
+                  <div class="tile"><span>32</span></div>
+                  <div class="tile"><span>64</span></div>
+                  <div class="tile"><span>128</span></div>
+                  <div class="tile"><span>256</span></div>
+                  <div class="tile"><span>+</span></div>
+                  <div class="tile"><span>★</span></div>
+                  <div class="tile"><span>⚡</span></div>
+                  <div class="tile"><span>GO</span></div>
+                </div>
 
-          <div class="section-title">1. Information We Collect</div>
-          <p>
-            <strong>Number Chain 2048 does not collect, store, or share personal information.</strong>
-            We do not request or collect names, email addresses, phone numbers, precise location data, contacts,
-            or any other personally identifiable information.
-          </p>
+                <div class="d-flex gap-2 mt-3 flex-wrap">
+                  <a class="btn-ghost" href="#about">How it works</a>
+                  <a class="btn-neon" href="#contact">Contact</a>
+                </div>
 
-          <div class="section-title">2. Local Device Data</div>
-          <p>
-            The game may store basic game data locally on your device such as your settings, score, best score,
-            and gameplay progress. This data stays on your device and is not transmitted to us.
-          </p>
-
-          <div class="section-title">3. Third-Party Services</div>
-          <p>
-            This app does <strong>not</strong> use third-party analytics, advertising SDKs, or tracking services.
-            We do not share data with third parties.
-          </p>
-
-          <div class="section-title">4. Advertising</div>
-          <p>
-            <strong>Number Chain 2048 does not display advertisements</strong> (no banner, interstitial, or rewarded ads).
-          </p>
-
-          <div class="section-title">5. Children’s Privacy</div>
-          <p>
-            This game is suitable for all ages. We do not knowingly collect personal information from children under 13.
-            Since we do not collect personal data, children can use the game safely.
-          </p>
-
-          <div class="section-title">6. Data Security</div>
-          <p>
-            We do not transmit personal data to any server. Any game data remains on your device.
-            While no digital system can be guaranteed 100% secure, the absence of data collection greatly reduces privacy risk.
-          </p>
-
-          <div class="section-title">7. Changes to This Policy</div>
-          <p>
-            We may update this Privacy Policy from time to time. Any changes will be posted on this page
-            with an updated “Last updated” date.
-          </p>
-
-          <div class="section-title">8. Contact Us</div>
-          <p class="mb-2">
-            If you have questions about this Privacy Policy, contact us:
-          </p>
-
-          <div class="p-3 rounded" style="background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08);">
-            <div><strong>Email:</strong> your-support-email@nc20248.com</div>
-            <div><strong>Developer:</strong> NC2028 Studio</div>
+                <div class="mt-3 muted small">
+                  Tip: Replace this preview with your real screenshots (image tags) if you prefer.
+                </div>
+              </div>
+            </div>
           </div>
+        </div><!-- row -->
+      </div><!-- hero-inner -->
+    </div><!-- hero-card -->
+  </div><!-- container -->
 
-          <div class="d-grid d-sm-flex gap-2 mt-4">
-            <a class="btn btn-accent" href="#" onclick="window.scrollTo({top:0, behavior:'smooth'}); return false;">
-              Back to Top
-            </a>
+  <!-- Features -->
+  <section id="features" class="section">
+    <div class="container">
+      <h2 class="section-title">Features</h2>
+      <p class="muted mb-4">Short, store-friendly highlights you can reuse anywhere.</p>
+
+      <div class="row g-3">
+        <div class="col-md-4">
+          <div class="cardx">
+            <div class="d-flex align-items-center gap-3 mb-2">
+              <div class="icon i1">⚡</div>
+              <div class="fw-black fw-bold">Quick Sessions</div>
+            </div>
+            <div class="muted">
+              Jump in instantly, play in short bursts, and come back anytime.
+            </div>
           </div>
         </div>
 
-        <p class="text-center muted mt-4 mb-0">
-          © 2026 Your Developer Name. All rights reserved.
-        </p>
+        <div class="col-md-4">
+          <div class="cardx">
+            <div class="d-flex align-items-center gap-3 mb-2">
+              <div class="icon i2">🎯</div>
+              <div class="fw-black fw-bold">Skill-Based</div>
+            </div>
+            <div class="muted">
+              Designed around focus, timing, and progression—no real-money references.
+            </div>
+          </div>
+        </div>
 
+        <div class="col-md-4">
+          <div class="cardx">
+            <div class="d-flex align-items-center gap-3 mb-2">
+              <div class="icon i3">📱</div>
+              <div class="fw-black fw-bold">Mobile-Friendly</div>
+            </div>
+            <div class="muted">
+              Clean UI, readable text, and lightweight layout for fast loading.
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
+  </section>
+
+  <!-- About -->
+  <section id="about" class="section">
+    <div class="container">
+      <div class="row g-3">
+        <div class="col-lg-7">
+          <div class="cardx">
+            <h3 class="mb-2 fw-bold">About</h3>
+            <p class="muted mb-0">
+              This is a reusable neon “arcade” homepage template. Swap in your game title, short pitch,
+              screenshots, and store links. It’s built with Bootstrap, so you can extend it quickly.
+            </p>
+          </div>
+        </div>
+        <div class="col-lg-5">
+          <div class="cardx">
+            <h3 class="mb-2 fw-bold">What to customize</h3>
+            <ul class="muted mb-0">
+              <li>Brand name (top left)</li>
+              <li>Headline + subtitle</li>
+              <li>Buttons (store link / privacy policy / support)</li>
+              <li>Preview panel (replace with real screenshots)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="section">
+    <div class="container">
+      <h2 class="section-title">FAQ</h2>
+
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="cardx">
+            <div class="fw-bold mb-1">Can I use this for any game?</div>
+            <div class="muted">Yes. It’s generic—no specific game name is required.</div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="cardx">
+            <div class="fw-bold mb-1">Where do I put my Privacy Policy link?</div>
+            <div class="muted">
+              Add it in the footer, or create a “Privacy Policy” page and link it from the top menu.
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="cardx">
+            <div class="fw-bold mb-1">Is this implying real-money rewards?</div>
+            <div class="muted">
+              No. The copy avoids “cash”, “winnings”, “earn”, or anything similar.
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="cardx">
+            <div class="fw-bold mb-1">Can I replace the preview tiles with images?</div>
+            <div class="muted">
+              Yes—swap the “screen” section with your screenshots using <code>&lt;img&gt;</code>.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" class="section">
+    <div class="container">
+      <div class="cardx">
+        <h2 class="section-title mb-2">Contact</h2>
+        <p class="muted mb-3">
+          Replace these details with your support email and studio name.
+        </p>
+
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="p-3 rounded-4" style="background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.10);">
+              <div class="fw-bold">Support Email</div>
+              <div class="muted">your-support-email@example.com</div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 rounded-4" style="background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.10);">
+              <div class="fw-bold">Developer / Studio</div>
+              <div class="muted">Your Studio Name</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex gap-2 mt-3 flex-wrap">
+          <a class="btn-neon" href="#" onclick="window.scrollTo({top:0, behavior:'smooth'}); return false;">
+            <span>↑</span> Back to Top
+          </a>
+          <a class="btn-ghost" href="#" onclick="alert('Link your privacy policy page here.'); return false;">
+            <span>🔒</span> Privacy Policy
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <div class="muted">© 2026 Your Studio Name</div>
+      <div class="muted">Made with Bootstrap • Neon arcade UI style</div>
+    </div>
+  </footer>
 </body>
 </html>
+```
